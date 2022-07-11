@@ -1,49 +1,77 @@
 #!/usr/bin/python3
-'''Module for Square class.'''
-from models.rectangle import Rectangle
+"""
+This program define the class Square
+"""
+from .rectangle import Rectangle
 
 
 class Square(Rectangle):
-    '''A Square class.'''
+    """
+    Class Square this class inheritance from Rectangle class.
+    """
 
+    # Constructor
     def __init__(self, size, x=0, y=0, id=None):
-        '''Constructor.'''
+        """
+        Constructor of a Square
+        Args:
+          - size: int
+          - x: int
+          - y: int
+          - id: int
+        """
         super().__init__(size, size, x, y, id)
 
-    def __str__(self):
-        '''Returns string info about this square.'''
-        return '[{}] ({}) {}/{} - {}'.\
-            format(type(self).__name__, self.id, self.x, self.y, self.width)
+    # Public Methods
+    def update(self, *args, **kwargs):
+        """
+        Update the attributes of the Square
+        Args [Optional each parameter]:
+          *args form:
+            - Rectangle.update(id:int, size:int, x:int, y:int)\n
+          **kwargs form:
+            - Rectangle.update(id=int, size=int, x=int, y=int)
+        """
+        keys = ["id", "size", "x", "y"]
+        len_keys, len_args = len(keys), len(args)
 
+        # Maybe refactor because setter of size and use update
+        if (args) and (args[0] is not None):
+            to_update = len_keys if (len_args > len_keys) else len_args
+            for i in range(to_update):
+                setattr(self, keys[i], args[i])
+        elif (kwargs is not None):
+            for key, value in kwargs.items():
+                if hasattr(self, key):
+                    setattr(self, key, value)
+
+    def to_dictionary(self):
+        """Return the representation of the instance Square"""
+        return ({
+            'id': self.id,
+            'size': self.width,
+            'x': self.x,
+            'y': self.y,
+        })
+
+    # Magic Methods
+    def __str__(self):
+        """Informal representation of a Square Instance"""
+        return ("[Square] ({:d}) {:d}/{:d} - {:d}"
+                .format(self.id, self.x, self.y, self.width))
+
+    # Getters and Setters
     @property
     def size(self):
-        '''Size of this square.'''
-        return self.width
+        """Getter of the private attribute \"size\""""
+        return (self.width)
 
     @size.setter
     def size(self, value):
+        """
+        Setter of the private attribute size
+        Args:
+          - value: int
+        """
         self.width = value
         self.height = value
-
-    def __update(self, id=None, size=None, x=None, y=None):
-        '''Internal method that updates instance attributes via */**args.'''
-        if id is not None:
-            self.id = id
-        if size is not None:
-            self.size = size
-        if x is not None:
-            self.x = x
-        if y is not None:
-            self.y = y
-
-    def update(self, *args, **kwargs):
-        '''Updates instance attributes via no-keyword & keyword args.'''
-        if args:
-            self.__update(*args)
-        elif kwargs:
-            self.__update(**kwargs)
-
-    def to_dictionary(self):
-        '''Returns dictionary representation of this class.'''
-        return {"id": self.id, "size": self.width,
-                "x": self.x, "y": self.y}
